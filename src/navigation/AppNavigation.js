@@ -13,6 +13,8 @@ import TasksScreen from '../screens/TasksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import DashboardScreen from '../screens/DashboardScreen';
+import LoginScreen from '../screens/LoginScreen';
+import { authContext } from '../context/AuthContext';
 // import { Button } from 'react-native-paper';
 
 
@@ -62,8 +64,7 @@ const TabNavigation = ({tabs=[], options})=>(
             <MaterialCommunityIcons name={item.icon} color={color} size={26} />
           ),
         }}
-      >
-        {()=>(
+        children={()=>(
           <Stack.Navigator>
             <Stack.Screen
               name={item.name}
@@ -72,15 +73,22 @@ const TabNavigation = ({tabs=[], options})=>(
             />
           </Stack.Navigator>
         )}
-      </Tab.Screen>
+      />
     ))}
   </Tab.Navigator>
 )
 
 export default function AppNavigation() {
+  const { isLogedIn } = React.useContext(authContext);
   return (
     <NavigationContainer>
-      <TabNavigation tabs={tabs} options={{initialRouteName: TASKS_SCREEN}}/>
+        {isLogedIn ? (
+          <TabNavigation tabs={tabs} options={{initialRouteName: TASKS_SCREEN}}/>
+        ):(
+          <Stack.Navigator initialRouteName={"LOGIN"}>
+            <Stack.Screen name="LOGIN" component={LoginScreen}/>
+          </Stack.Navigator>
+        )}
     </NavigationContainer>
   )
 }
